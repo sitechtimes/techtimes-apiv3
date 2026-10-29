@@ -1,2 +1,3 @@
 # techtimes-apiv3
-The backend of sitechtimes https://www.sitechtimes.com/
+The backend of sitechtimes made in django
+ported from https://github.com/sitechtimes/techtimes-apiv2
