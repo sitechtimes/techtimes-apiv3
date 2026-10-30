@@ -1,0 +1,27 @@
+[project]
+name = "techtimes-apiv3"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Goooosi", email = "166347594+Goooosi@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.1.2",
+    "djangorestframework>=3.18.3",
+]
+
+[project.scripts]
+techtimes-apiv3 = "techtimes_apiv3:main"
+
+# [build-system]
+#requires = ["uv_build>=0.13.5,<0.14.0"]
+#build-backend = "uv_build"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
