@@ -25,18 +25,13 @@
       inherit (nixpkgs) lib;
       forAllSystems = lib.genAttrs lib.systems.flakeExposed;
 
-      # 1. Load your uv workspace from the local directory
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
-
-      # 2. Generate overlays to build Python dependencies from wheels
       overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
-      editableOverlay = workspace.mkEditablePyprojectOverlay { root = "$REPO_ROOT"; };
 
-      # 3. Build the core Python package set for each system architecture
       pythonSets = forAllSystems (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          python = pkgs.python3; # Uses the default Python version from nixpkgs
+          python = pkgs.python314; # pin to match requires-python
         in
         (pkgs.callPackage pyproject-nix.build.packages { inherit python; }).overrideScope (
           lib.composeManyExtensions [
@@ -47,32 +42,35 @@
       );
     in
     {
-      # 4. Expose the devShells configuration
       devShells = forAllSystems (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          
-          # Apply the editable configuration so local code modifications hot-reload
-          pythonSet = pythonSets.${system}.overrideScope editableOverlay;
-          
-          # Create the isolated virtual environment including default workspace dependencies
-          virtualenv = pythonSet.mkVirtualEnv "django-dev-env" workspace.deps.default;
+          pythonSet = pythonSets.${system};
+          virtualenv = pythonSet.mkVirtualEnv "techtimes-dev-env" workspace.deps.all;
         in
         {
           default = pkgs.mkShell {
-            packages = [
-              virtualenv
-              pkgs.uv          # Keeps the uv CLI tool available inside the shell
-              pkgs.sqlite      # Includes SQLite natively for standard Django setups
+            packages = [ 
+              virtualenv 
+              pkgs.uv
+              pkgs.sqlite
             ];
 
+            env = {
+              UV_NO_SYNC = "1";
+              UV_PYTHON = pythonSet.python.interpreter;
+              UV_PYTHON_DOWNLOADS = "never";
+            };
+
             shellHook = ''
-              echo "⚡ Django Development Shell Activated ⚡"
-              echo "Run 'python manage.py runserver' to start your backend."
+              unset PYTHONPATH
             '';
           };
         }
       );
+
+      packages = forAllSystems (system: {
+        default = pythonSets.${system}.mkVirtualEnv "techtimes-env" workspace.deps.default;
+      });
     };
 }
-
