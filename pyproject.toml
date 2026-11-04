@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "django>=6.1.2",
+    "django-stubs>=6.1.2",
     "djangorestframework>=3.18.3",
     "granian>=2.8.7",
     "python-dotenv>=1.2.4",
@@ -24,7 +25,9 @@ dev = [
 ]
 
 [tool.pyright]
-extraPaths = ["app"]
+venvPath = "."
+venv = ".venv"
+extraPaths = [".", "app"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
