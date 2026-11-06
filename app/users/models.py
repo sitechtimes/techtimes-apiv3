@@ -10,6 +10,8 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra):
         if not email:
             raise ValueError("Email field is missing")
+        extra.setdefault("is_staff", False)
+        extra.setdefault("is_superuser", False)
         extra.setdefault("role", Role.Writer)
         user = self.model(email=self.normalize_email(email), **extra)
         user.set_password(password)

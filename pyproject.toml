@@ -10,29 +10,35 @@ requires-python = ">=3.14"
 dependencies = [
     "bcrypt>=5.0.0",
     "django[bcrypt]>=6.1.2",
-    "django-stubs>=6.1.2",
     "djangorestframework>=3.18.3",
     "granian>=2.8.7",
     "python-dotenv>=1.2.4",
     "djangorestframework-simplejwt>=5.5.1",
 ]
 
+plugins = ["django_stubs_pyright.plugin"]
+
 [tool.uv]
 package = false
 
 [dependency-groups]
 dev = [
+    "django-stubs>=6.1.2",
+    "djangorestframework-stubs>=3.18.2",
     "pyright>=1.1.414",
     "ruff>=0.17.3",
 ]
 
 [tool.pyright]
-venvPath = "."
-venv = ".venv"
 extraPaths = [".", "app"]
+plugins = ["django_stubs_pyright.plugin"]
+
+
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["cms", "core", "schoolCalendar", "users", "games"]
+[tool.django-stubs]
+django_settings_module = "core.settings"
