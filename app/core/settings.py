@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR.parent / '.env')
 
 JWT_KEY = os.environ.get('JWT_KEY')
+SITE_URL = os.environ.get('SITE_URL')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
@@ -111,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 PASSWORD_HASHERS = [
     'user.hashers.BCryptHasher',
-
 ]
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
