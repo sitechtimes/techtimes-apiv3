@@ -162,13 +162,13 @@ class UserSignIn(
             },
             status=status.HTTP_200_OK
         )
-class UserLogOut(
+class UserSignOut(
     viewsets.GenericViewSet
 ):
     serializers=Serializer
     permission_classes=[IsAuthenticated]
     # blacklists tokens so they can't be used to log in
-    def logout(self, request: Request) -> Response:
+    def signOut(self, request: Request) -> Response:
         raw = request.data.get("refresh", "") if isinstance(request.data, dict) else None
         if raw:
             try:

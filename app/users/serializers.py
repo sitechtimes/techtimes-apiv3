@@ -8,7 +8,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all(), message="user already exists")]
     )
     
-    class Meta(serializers.ModelSerializer.Meta):
+    class Meta(): # type: ignore[reportIncompatibleVariableOverride]:
         model = User # type: ignore[reportAssignmentType]
         fields = ['username', 'email', 'password'] 
         extra_kwargs = {
@@ -33,7 +33,7 @@ class SignInSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, trim_whitespace=True)
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta(serializers.ModelSerializer.Meta):
+    class Meta():  # type: ignore[reportIncompatibleVariableOverride]:
         model = User # type: ignore[reportAssignmentType]  
         fields = ["id", "username", "email", "role", "image_url", "verified"]
         read_only_fields = fields

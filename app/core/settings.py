@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 PASSWORD_HASHERS = [
-    'user.hashers.BCryptHasher',
+    'users.hashers.BCryptHasher',
 ]
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
