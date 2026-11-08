@@ -13,11 +13,14 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR.parent / '.env')
 
+JWT_KEY = os.environ.get('JWT_KEY')
+SITE_URL = os.environ.get('SITE_URL')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
@@ -38,8 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "rest_framework",
+    'cms',
+    'games',
+    'schoolCalendar',
+    'users',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
+
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -99,8 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
+PASSWORD_HASHERS = [
+    'users.hashers.BCryptHasher',
+]
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
@@ -121,9 +133,30 @@ STATIC_URL = 'static/'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "use_tls": True,
+            "username": os.environ["EMAIL_USER"],
+            "password": os.environ["EMAIL_PASSWORD"],
+        },
     },
+}
+
+# Rest Framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=6),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "SIGNING_KEY": JWT_KEY,
 }
